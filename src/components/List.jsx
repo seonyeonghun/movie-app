@@ -21,11 +21,7 @@ function List({ movies }) {
               <td>{movie.data.title}</td>
               <td>{movie.data.genre}</td>
               <td>{Math.ceil(movie.data.runtime / 60)}시간</td>
-              <td>
-                {movie.data.open_year.toDate().getFullYear()}.
-                {movie.data.open_year.toDate().getMonth() + 1}.
-                {movie.data.open_year.toDate().getDay()}
-              </td>
+              <td>{movie.data.open_year.toLocaleString()}</td>
             </tr>
           ))}
         </tbody>

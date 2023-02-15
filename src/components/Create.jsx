@@ -1,50 +1,33 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Navigation from "./Navigation.jsx";
 import { db } from "../lib/firebase.js";
-import { collection } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 function Create() {
+  const [inputMovie, setInputMovie] = useState([]);
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [runtime, setRuntime] = useState("");
   const [open_year, setOpen_year] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
-    checkForms();
+    addMovie();
+    resetInputs();
   };
-  
-  const addMovie = async () => {
-    const moviesRef = db.collection('movies');
-    const newMovie = {
-      titile: title,
-      genre,
-      runtime,
-      open_year
-    }
-    moviesRef.add(newMovie)
-    .then(docRef => {
-      console.log('New Movie Created with ID : ', docRef.id)
-    })
-    .catch(error => {
-      console.log('Error adding new Movie: ', error);
-    })
 
-  }
-  const resetInputs = () => {};
-  const checkForms = () => {
-    if (title === "") {
-      alert("제목을 입력해주세요!");
-    } else if (genre === "") {
-      alert("장르를 입력해주세요!");
-    } else if (runtime === "") {
-      alert("상영시간을 입력해주세요");
-    } else if (open_year === "") {
-      alert("개봉일을 입력해주세요!");
-    } else {
-    }
+  const resetInputs = () => {
+    setTitle("");
+    setGenre("");
+    setOpen_year("");
+    setRuntime("");
   };
-  useEffect(() => {
-    
-  }, []);
+  const addMovie = () => {
+    const docRef = addDoc(collection(db, "movies"), {
+      title: title,
+      genre: genre,
+      runtime: runtime,
+      open_year: new Date(open_year).toLocaleString(),
+    }).catch((error) => console.log(error));
+  };
   return (
     <Fragment>
       <h1>Movie App - Create Mode</h1>
@@ -90,7 +73,7 @@ function Create() {
               </td>
               <td>
                 <input
-                  type='text'
+                  type='datetime-local'
                   id='open_year'
                   name='open_year'
                   value={open_year}
@@ -101,7 +84,7 @@ function Create() {
           </tbody>
           <tfoot></tfoot>
         </table>
-        <button type="submit">등록</button>
+        <button type='submit'>등록</button>
         <button onClick={resetInputs}>취소</button>
       </form>
     </Fragment>
