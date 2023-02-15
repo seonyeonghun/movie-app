@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
+import Navigation from "./Navigation.jsx";
 import { db } from "../lib/firebase.js";
 import { collection, getDocs } from "firebase/firestore";
 import List from "./List.jsx";
@@ -22,7 +23,8 @@ function ListMovies() {
   const onReset = () => getMovies();
   return (
     <Fragment>
-      <h1>Movie Lists ({movies.length})</h1>
+      <h1>Movie App - List Mode ({movies ? `${movies.length} items` : 0}) </h1>
+      <Navigation props='list' />
       <div>
         <button className={styles.loadBtn} onClick={onReset}>
           새로고침

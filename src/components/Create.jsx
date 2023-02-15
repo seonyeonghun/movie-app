@@ -1,24 +1,34 @@
 import React, { Fragment, useEffect, useState } from "react";
+import Navigation from "./Navigation.jsx";
+import { db } from "../lib/firebase.js";
+import { collection } from "firebase/firestore";
 function Create() {
-  const [movie, setMovie] = useState([]);
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [runtime, setRuntime] = useState("");
-  const [openyear, setOpenyear] = useState("");
+  const [open_year, setOpen_year] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
-  };
-  const addInputs = () => {
     checkForms();
-    const movieData = {
-      title: title,
-      genre: genre,
-      runtime: runtime,
-      openyear: openyear,
-    };
-    console.log("movieData : " + movieData);
-    setMovie([movieData]);
   };
+  
+  const addMovie = async () => {
+    const moviesRef = db.collection('movies');
+    const newMovie = {
+      titile: title,
+      genre,
+      runtime,
+      open_year
+    }
+    moviesRef.add(newMovie)
+    .then(docRef => {
+      console.log('New Movie Created with ID : ', docRef.id)
+    })
+    .catch(error => {
+      console.log('Error adding new Movie: ', error);
+    })
+
+  }
   const resetInputs = () => {};
   const checkForms = () => {
     if (title === "") {
@@ -27,15 +37,18 @@ function Create() {
       alert("장르를 입력해주세요!");
     } else if (runtime === "") {
       alert("상영시간을 입력해주세요");
-    } else if (openyear === "") {
-      alert("개봉일을 입력해주세요!")
+    } else if (open_year === "") {
+      alert("개봉일을 입력해주세요!");
     } else {
     }
   };
-  useEffect(() => {}, [movie]);
+  useEffect(() => {
+    
+  }, []);
   return (
     <Fragment>
-      <h1>Create Movie</h1>
+      <h1>Movie App - Create Mode</h1>
+      <Navigation props='create' />
       <form onSubmit={handleSubmit}>
         <table>
           <thead>
@@ -80,15 +93,15 @@ function Create() {
                   type='text'
                   id='open_year'
                   name='open_year'
-                  value={openyear}
-                  onChange={(e) => setOpenyear(e.target.value)}
+                  value={open_year}
+                  onChange={(e) => setOpen_year(e.target.value)}
                 />
               </td>
             </tr>
           </tbody>
           <tfoot></tfoot>
         </table>
-        <button onClick={addInputs}>등록</button>
+        <button type="submit">등록</button>
         <button onClick={resetInputs}>취소</button>
       </form>
     </Fragment>
